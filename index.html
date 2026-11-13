@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eslam ElShamy — Architect, Designer, Researcher</title>
+<meta name="description" content="Eslam ElShamy — architect, designer and researcher working on human-AI co-design, immersive media and digital fabrication. Based in Germany.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=JetBrains+Mono:wght@400;500&family=Readex+Pro:wght@300..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=31">
+</head>
+<body class="loading">
+
+<div id="loader" aria-hidden="true">
+  <div class="cols"><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="ld-top mono"><span data-i18n="ldName">Eslam ElShamy</span><span data-i18n="ldTitle">Portfolio 2026</span><span id="ldMsg">Plotting sheet</span></div>
+  <div class="ld-bar"><i id="ldBar"></i></div>
+  <div class="ld-num" id="ldNum">000</div>
+</div>
+
+<!-- Drafting cursor: crosshair, marker, and its live coordinates -->
+<div id="xh" aria-hidden="true"><i class="hx"></i><i class="vx"></i></div>
+<div id="cur" aria-hidden="true"><span id="curT"></span></div>
+<div id="xy" class="mono" aria-hidden="true">0000, 0000</div>
+<div id="chip" class="mono" aria-hidden="true"></div>
+<div id="curtain" class="cols" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+<div id="toast" class="mono" role="status"></div>
+
+<!-- Scroll progress, on the edge of the sheet -->
+<div id="rail" aria-hidden="true"><i><b id="railF"></b></i><span id="pct" class="mono">000</span></div>
+
+<header id="nav">
+  <a href="#hero" class="mark" dir="ltr">E<span>/</span>E</a>
+  <span class="mono nav-mid" id="secName"></span>
+  <div class="nav-r">
+    <span class="mono clock hide-m"><span dir="ltr">DE</span> <span class="clk" dir="ltr">00:00:00</span></span>
+    <button id="lang" type="button" aria-label="Switch language / تغيير اللغة" data-i18n="langBtn">ع</button>
+    <button id="theme" class="mono" type="button" aria-label="Switch sheet colour"><i></i><span id="themeT">Paper</span></button>
+    <button id="menuBtn" class="mono" type="button" aria-expanded="false"><span id="menuT">Menu</span><b></b></button>
+  </div>
+</header>
+
+<div id="menu" aria-hidden="true">
+  <div class="cols"><i></i><i></i><i></i><i></i><i></i></div>
+  <nav class="menu-in">
+    <a href="projects.html" data-go><small class="mono">01</small><span data-i18n="nWork">Work</span></a>
+    <a href="#experience"><small class="mono">02</small><span data-i18n="nXp">Experience</span></a>
+    <a href="#research"><small class="mono">03</small><span data-i18n="nRes">Research</span></a>
+    <a href="#about"><small class="mono">04</small><span data-i18n="nAbout">About</span></a>
+    <a href="#contact"><small class="mono">05</small><span data-i18n="nContact">Contact</span></a>
+  </nav>
+  <div class="menu-foot mono"><a href="https://linkedin.com/in/eslamshamy" target="_blank" rel="noopener" data-i18n="linkedin">LinkedIn ↗</a><a href="https://www.eslamshamy.com" target="_blank" rel="noopener" data-i18n="website">Website ↗</a><a href="mailto:info@eslamshamy.com" dir="ltr">info@eslamshamy.com</a></div>
+</div>
+
+<!-- Side arrow to the hidden playground -->
+<button id="pgTab" type="button" aria-expanded="false" aria-controls="pg" data-cursor="curPlay"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 10h13M11 5l5 5-5 5"/></svg><span class="mono" data-i18n="pg">Playground</span></button>
+<aside id="pg" aria-hidden="true" aria-label="Playground">
+  <header class="pg-h"><div><h2 data-i18n="pg">Playground</h2><p class="mono" data-i18n="pgK"></p></div>
+    <button id="pgClose" type="button" aria-label="Close playground"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 10H4M9 5l-5 5 5 5"/></svg></button></header>
+  <div class="pg-body"><nav class="pg-tabs" id="pgTabs" role="tablist"></nav>
+    <div class="pg-stage"><div class="pg-cv"><canvas id="pgC"></canvas><canvas id="pgGL" hidden tabindex="0" aria-label="3D runner game"></canvas><div id="pgHud" class="mono"></div><div id="pgMsg"></div></div><div class="pg-bar"><div class="pg-ui" id="pgUi"></div><p class="mono pg-hint" id="pgHint"></p></div></div></div>
+</aside>
+
+<main>
+  <!-- Front page: the name is a cloud of points that gathers, scatters under the pointer, and re-forms -->
+  <section id="hero" data-sec="sIntro">
+    <canvas id="pts" aria-hidden="true"></canvas>
+    <h1 class="sr" data-i18n="name">Eslam ElShamy</h1>
+    <div class="hero-c"><p class="tagline mono"></p></div>
+    <div class="hero-b mono"><span data-i18n="based">Based in Germany</span><span class="scroll" data-i18n="scroll">Scroll ↓</span><span class="hide-m" data-i18n="roles">Architect · Designer · Researcher</span></div>
+  </section>
+
+  <div class="marquee" id="mq" aria-hidden="true"><div class="mq-in" id="mqIn"></div></div>
+
+  <section id="work" data-sec="nWork">
+    <div class="pin" id="pin">
+      <div class="track" id="track">
+        <div class="lead">
+          <p class="mono" data-i18n="workK"></p>
+          <h2 data-i18n-html="workH"></h2>
+          <p class="mono" data-i18n="workHint"></p>
+        </div>
+        <a class="endcard" id="endcard" href="projects.html" data-cursor="curOpen" draggable="false">
+          <span class="mono"><span data-i18n="seeMoreK"></span> (<span id="allN">16</span>)</span>
+          <b data-i18n="seeMore">See more</b>
+          <i class="go"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 20h24M22 10l10 10-10 10"/></svg></i>
+        </a>
+      </div>
+      <div class="ruler" id="ruler"><i id="rulerM"></i></div>
+    </div>
+  </section>
+
+  <section id="experience" class="pad" data-sec="nXp">
+    <header class="sh rv"><span class="mono">(03)</span><h2 data-i18n="xpH">Experience</h2><i></i></header>
+    <div id="xp"></div>
+  </section>
+
+  <section id="research" class="pad" data-sec="nRes">
+    <header class="sh rv"><span class="mono">(04)</span><h2 data-i18n-html="resH">Research <em>&amp;</em> talks</h2><i></i></header>
+    <div id="rs"></div>
+  </section>
+
+  <section id="about" class="pad" data-sec="nAbout">
+    <header class="sh rv"><span class="mono">(05)</span><h2 data-i18n="aboutH">About</h2><i></i></header>
+    <div class="about">
+      <div class="arch-wrap rv">
+        <svg class="badge" viewBox="0 0 200 200" aria-hidden="true" dir="ltr"><defs><path id="circ" d="M100 100m-78 0a78 78 0 1 1 156 0a78 78 0 1 1-156 0"/></defs><text><textPath href="#circ">Architect · Designer · Researcher · Architect · Designer · Researcher · </textPath></text></svg>
+        <div class="arch"><img src="assets/portrait.jpg" alt="Portrait of Eslam ElShamy" onerror="this.remove()"><div class="arch-ph"><b>EE</b><span class="mono" dir="ltr">assets/portrait.jpg</span></div></div>
+      </div>
+      <div>
+        <p class="state" id="state"></p>
+        <div class="stats">
+          <div><b data-count="5" data-suf="+">0</b><span class="mono" data-i18n="s1"></span></div>
+          <div><b data-count="5">0</b><span class="mono" data-i18n="s2"></span></div>
+          <div><b data-count="4">0</b><span class="mono" data-i18n="s3"></span></div>
+          <div><b data-count="3">0</b><span class="mono" data-i18n="s4"></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" data-sec="nContact">
+    <p class="mono" data-i18n="contactK">(06) Contact</p>
+    <h2 class="c-head" data-i18n="hello">Say hello</h2>
+    <div class="c-grid">
+      <form id="form" novalidate>
+        <div class="f-row2">
+          <label class="fld"><span class="mono" data-i18n="fName">Name</span><input name="name" autocomplete="name"><i></i></label>
+          <label class="fld"><span class="mono" data-i18n="fEmail">Email</span><input name="email" type="email" autocomplete="email" dir="ltr"><i></i></label>
+        </div>
+        <label class="fld"><span class="mono" data-i18n="fSubject">Subject</span><input name="subject"><i></i></label>
+        <label class="fld"><span class="mono" data-i18n="fMessage">Message</span><textarea name="message" rows="3"></textarea><i></i></label>
+        <button type="submit" class="btn mag" id="send" disabled><span data-i18n="send">Send message</span></button>
+      </form>
+      <div class="c-side">
+        <p class="mono dim" data-i18n="direct">Or write directly</p>
+        <button type="button" id="mail" data-cursor="curCopy" dir="ltr">info@eslamshamy.com</button>
+        <p class="mono dim"><span data-i18n="germany">Germany</span> · <span class="clk" dir="ltr">00:00:00</span></p>
+        <div class="c-row">
+          <a class="btn mag ghost" href="https://linkedin.com/in/eslamshamy" target="_blank" rel="noopener"><span data-i18n="linkedin">LinkedIn ↗</span></a>
+          <a class="btn mag ghost" href="https://doi.org/10.25673/124351" target="_blank" rel="noopener"><span data-i18n="thesis">Thesis ↗</span></a>
+        </div>
+      </div>
+    </div>
+    <footer class="mono"><span data-i18n="copyright">© Eslam ElShamy 2026</span><span class="hide-m" data-i18n="roles">Architect · Designer · Researcher</span><a href="#hero" data-i18n="top">Back to top ↑</a></footer>
+  </section>
+</main>
+
+<script src="scenes.js?v=31"></script>
+<script src="scenes2.js?v=31"></script>
+<script src="i18n.js?v=31"></script>
+<script src="projects-data.js?v=31"></script>
+<script src="playground.js?v=31"></script>
+<script src="main.js?v=31"></script>
+</body>
+</html>
