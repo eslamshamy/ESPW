@@ -4,7 +4,7 @@ const I18N = {
     name: 'Eslam ElShamy', heroLines: ['ESLAM ELSHAMY'], heroLinesM: ['ESLAM', 'ELSHAMY'],
     ldName: 'Eslam ElShamy', ldTitle: 'Portfolio 2026', ldMsgs: ['Plotting sheet', 'Setting type', 'Gathering points', 'Ready'],
     heroSeq: ["Hi, I'm Eslam", 'Welcome to my website', 'If you can design one thing, you can design everything.'], quoteBy: '— Massimo Vignelli',
-    journey: ['2016 — Bachelor of Architecture, University of Bahrain', '2021 — Architecture and interiors, Cairo', '2024 — Zaha Hadid Architects, Venice Studio', '2024 — Master of Integrated Design, Bauhaus Dessau', '2026 — Explore Imet, in Europe’s largest 360 dome of its kind'],
+    journey: ['Bahrain · 2021 — Bachelor of Architecture, University of Bahrain', 'Egypt · 2022 — Architecture and interior design', 'Mexico · 2023 — Architecture design projects', 'Pakistan · 2023 — Design and sales consultant', 'Italy · 2024 — Zaha Hadid Architects, Venice Studio', 'Germany · 2026 — Master of Integrated Design, Bauhaus Dessau', 'England · 2026 — Immersive media in Real Ideas Market Hall, Europe’s largest 360 dome of its kind'],
     pg: 'Playground', pgK: 'A hidden corner of the site. Nothing here is serious.', curPlay: 'Play', pgToys: ['Particle Writer', 'Isometric Towers', 'Moholy-Nagy’s Canvas', 'Form memory', 'Bauhaus Run'],
     
     pgPlay: 'Play', pgAgain: 'Play again', pgOver: 'Game over', pgRunTitle: 'Bauhaus Run', pgNoGL: '3D isn’t available on this device.', caseBack: '← Projects', caseStudy: 'Case study', caseMore: 'More detail',
@@ -39,7 +39,7 @@ const I18N = {
     name: 'إسلام الشامي', heroLines: ['إسلام الشامي'], heroLinesM: ['إسلام', 'الشامي'],
     ldName: 'إسلام الشامي', ldTitle: 'ملف الأعمال 2026', ldMsgs: ['رسم اللوحة', 'ضبط الحروف', 'تجميع النقاط', 'جاهز'],
     heroSeq: ['مرحباً، أنا إسلام', 'أهلاً بك في موقعي', 'إذا استطعت أن تصمم شيئاً واحداً، فبإمكانك أن تصمم كل شيء.'], quoteBy: '— ماسيمو فينييلي',
-    journey: ['2016 — بكالوريوس العمارة، جامعة البحرين', '2021 — عمارة وتصميم داخلي، القاهرة', '2024 — زها حديد للمعماريين، استوديو البندقية', '2024 — ماجستير التصميم المتكامل، باوهاوس ديساو', '2026 — استكشف إيمت، في أكبر قبة 360 من نوعها في أوروبا'],
+    journey: ['البحرين · 2021 — بكالوريوس العمارة، جامعة البحرين', 'مصر · 2022 — عمارة وتصميم داخلي', 'المكسيك · 2023 — مشاريع تصميم معماري', 'باكستان · 2023 — مستشار تصميم ومبيعات', 'إيطاليا · 2024 — زها حديد للمعماريين، استوديو البندقية', 'ألمانيا · 2026 — ماجستير التصميم المتكامل، باوهاوس ديساو', 'إنجلترا · 2026 — وسائط غامرة في قاعة سوق ريل آيدياز، أكبر قبة 360 من نوعها في أوروبا'],
     pg: 'ركن الألعاب', pgK: 'اقضِ بعض الوقت الممتع!', curPlay: 'العب', pgToys: ['الكاتب الآلي', 'أبراج المدينة', 'لوحة موهولي ناجي', 'ذاكرة الأشكال', 'سباق الباوهاوس'],
     
     pgPlay: 'العب', pgAgain: 'العب مجدداً', pgOver: 'انتهت اللعبة', pgRunTitle: 'سباق الباوهاوس', pgNoGL: 'العرض ثلاثي الأبعاد غير متاح على هذا الجهاز.', caseBack: 'المشاريع →', caseStudy: 'دراسة حالة', caseMore: 'تفاصيل أكثر',

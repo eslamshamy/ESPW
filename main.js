@@ -144,33 +144,92 @@ const pts = $('#pts'), pc = pts.getContext('2d'), heroC = $('.hero-c'), tagEl = 
 let P = [], pdpr = 1, dot = 2, dotTo = 2, textMid = 0, si = -1, elapsed = 0, stageT = 0, lastDraw = 0, capT;
 const SCATTER_MS = 2400, LOOP_TO = 2; // after the last shape, return to the quote
 const SEQ = [{ txt: 0, ms: 4500 }, { txt: 1, ms: 4800 }, { txt: 2, ms: 10000, cap: () => T('quoteBy') },
-  { shape: 'towers', j: 0, ms: 6000 }, { shape: 'pyramids', j: 1, ms: 6000 }, { shape: 'bridge', j: 2, ms: 6000 }, { shape: 'bauhaus', j: 3, ms: 6500 }, { shape: 'dome', j: 4, ms: 6500 }];
+  { shape: 'towers', j: 0, ms: 6000 }, { shape: 'pyramids', j: 1, ms: 6000 }, { shape: 'castillo', j: 2, ms: 6000 }, { shape: 'mosque', j: 3, ms: 6000 }, { shape: 'bridge', j: 4, ms: 6000 }, { shape: 'bauhaus', j: 5, ms: 6500 }, { shape: 'dome', j: 6, ms: 6500 }];
 /* each shape is drawn solid into a box (x, y, w, h); the dots then fill whatever is painted */
+/* a small kit for drawing a shape in box units: a runs across the box from the middle (1 = the box height), b runs down it */
+const kit = (o, x, y, w, h) => { const cx = x + w / 2, H = (a, b) => [cx + a * h, y + b * h];
+  const poly = pts => { o.beginPath(); pts.forEach((q, i) => { const [u, v] = H(q[0], q[1]); i ? o.lineTo(u, v) : o.moveTo(u, v); }); o.closePath(); };
+  const rect = (a1, b1, a2, b2) => poly([[a1, b1], [a2, b1], [a2, b2], [a1, b2]]);
+  const seg = (a1, b1, a2, b2) => { const [u, v] = H(a1, b1), [p, q] = H(a2, b2); o.moveTo(u, v); o.lineTo(p, q); };
+  const arch = (a, r, spring, top, bot) => poly([[a - r, bot], [a - r, spring], [a - r * .86, top + (spring - top) * .42], [a - r * .4, top + (spring - top) * .1], [a, top], [a + r * .4, top + (spring - top) * .1], [a + r * .86, top + (spring - top) * .42], [a + r, spring], [a + r, bot]]);
+  const dome = (a, r, by, hh) => { const L = H(a - r, by), R = H(a + r, by), T = H(a, by - hh); o.beginPath(); o.moveTo(L[0], L[1]); o.bezierCurveTo(L[0] - r * h * .1, L[1] - hh * h * .6, L[0] + r * h * .5, T[1] + hh * h * .05, T[0], T[1]); o.bezierCurveTo(R[0] - r * h * .5, T[1] + hh * h * .05, R[0] + r * h * .1, R[1] - hh * h * .6, R[0], R[1]); o.closePath(); o.fill(); };
+  const finial = (a, top, len) => { o.lineWidth = Math.max(2, h * .008); o.lineCap = 'round'; o.beginPath(); seg(a, top, a, top - len); o.stroke(); const b = H(a, top - len); o.beginPath(); o.arc(b[0], b[1], Math.max(2, h * .013), 0, 6.283); o.fill(); };
+  const cut = f => { o.globalCompositeOperation = 'destination-out'; f(); o.globalCompositeOperation = 'source-over'; };
+  return { H, poly, rect, seg, arch, dome, finial, cut }; };
 const SHAPES = {
-  towers(o, x, y, w, h) { // Manama: two sail towers joined by three bridges
-    o.beginPath(); o.moveTo(x + w * .2, y + h * .96); o.quadraticCurveTo(x + w * .3, y + h * .3, x + w * .455, y); o.lineTo(x + w * .455, y + h * .96); o.closePath(); o.fill();
-    o.beginPath(); o.moveTo(x + w * .8, y + h * .96); o.quadraticCurveTo(x + w * .7, y + h * .3, x + w * .545, y); o.lineTo(x + w * .545, y + h * .96); o.closePath(); o.fill();
-    [.3, .5, .7].forEach(k => { o.fillRect(x + w * .455, y + h * k, w * .09, h * .022); o.beginPath(); o.arc(x + w * .5, y + h * k + h * .011, h * .05, 0, 6.283); o.fill(); });
-    o.fillRect(x + w * .08, y + h * .96, w * .84, h * .04); },
-  pyramids(o, x, y, w, h) { // Cairo
-    const tri = (a, b, c) => { o.beginPath(); o.moveTo(x + w * a, y + h * .96); o.lineTo(x + w * b, y + h * c); o.lineTo(x + w * (2 * b - a), y + h * .96); o.closePath(); o.fill(); };
-    tri(.2, .5, .06); tri(.0, .17, .52); tri(.68, .84, .44); o.beginPath(); o.arc(x + w * .9, y + h * .14, h * .07, 0, 6.283); o.fill(); o.fillRect(x, y + h * .96, w, h * .04);
-    o.globalCompositeOperation = 'destination-out'; o.lineWidth = Math.max(2, h * .012); for (let k = .26; k < .95; k += .14) { o.beginPath(); o.moveTo(x, y + h * k); o.lineTo(x + w, y + h * k); o.stroke(); } o.globalCompositeOperation = 'source-over'; },
-  bridge(o, x, y, w, h) { // Venice
-    o.beginPath(); o.moveTo(x, y + h * .62); o.lineTo(x + w * .14, y + h * .62); o.lineTo(x + w * .5, y + h * .2); o.lineTo(x + w * .86, y + h * .62); o.lineTo(x + w, y + h * .62); o.lineTo(x + w, y + h * .78); o.lineTo(x, y + h * .78); o.closePath(); o.fill();
-    o.fillRect(x + w * .36, y + h * .1, w * .28, h * .2); o.beginPath(); o.moveTo(x + w * .34, y + h * .1); o.lineTo(x + w * .5, y); o.lineTo(x + w * .66, y + h * .1); o.closePath(); o.fill();
-    o.globalCompositeOperation = 'destination-out'; o.beginPath(); o.ellipse(x + w * .5, y + h * .8, w * .27, h * .36, 0, 0, 6.283); o.fill();
-    o.beginPath(); o.arc(x + w * .5, y + h * .2, h * .06, Math.PI, 0); o.rect(x + w * .5 - h * .06, y + h * .2, h * .12, h * .1); o.fill();
-    for (let i = 0; i < 5; i++) [-1, 1].forEach(s => { const cx = x + w * (.5 + s * (.11 + i * .065)), cy = y + h * (.33 + i * .076); o.beginPath(); o.arc(cx, cy, h * .028, Math.PI, 0); o.rect(cx - h * .028, cy, h * .056, h * .07); o.fill(); });
+  towers(o, x, y, w, h) { // Manama: Bahrain World Trade Center, two sail towers joined by three bridges that each carry a wind turbine
+    const cx = x + w / 2, tw = h * .64, gap = tw * .3, base = y + h * .96, ix = gap / 2, ox = tw / 2;
+    [-1, 1].forEach(s => { o.beginPath(); o.moveTo(cx + s * ox, base); o.quadraticCurveTo(cx + s * (ox * .55), y + h * .5, cx + s * (ix + gap * .08), y); o.lineTo(cx + s * ix, y + h * .1); o.lineTo(cx + s * ix, base); o.closePath(); o.fill(); });
+    o.globalCompositeOperation = 'destination-out'; o.lineWidth = Math.max(1.5, h * .006);                                                      /* the bands of glass on the sails */
+    for (let k = .2; k < .94; k += .055) { o.beginPath(); o.moveTo(cx - ox, y + h * k); o.lineTo(cx - ix - 2, y + h * k); o.moveTo(cx + ix + 2, y + h * k); o.lineTo(cx + ox, y + h * k); o.stroke(); }
+    o.globalCompositeOperation = 'source-over';
+    o.strokeStyle = o.fillStyle; o.lineCap = 'round'; const R = gap * .7, rot = [.35, 1.2, 2.1];
+    [.36, .58, .8].forEach((k, n) => { const yy = y + h * k, lw = Math.max(3, h * .014);
+      const blades = c => { for (let b = 0; b < 3; b++) { const an = rot[n] + b * 2.094; o.lineWidth = c; o.beginPath(); o.moveTo(cx, yy); o.lineTo(cx + Math.cos(an) * R, yy + Math.sin(an) * R); o.stroke(); } };
+      o.globalCompositeOperation = 'destination-out'; blades(lw + h * .02); o.globalCompositeOperation = 'source-over';                                /* clears the sail behind each blade so it reads */
+      o.fillRect(cx - ix - 1, yy - h * .012, gap + 2, h * .024);                                                                                       /* the bridge */
+      o.beginPath(); o.ellipse(cx - ix, yy, h * .018, h * .022, 0, 0, 6.283); o.ellipse(cx + ix, yy, h * .018, h * .022, 0, 0, 6.283); o.fill();      /* its pods */
+      o.beginPath(); o.arc(cx, yy, h * .014, 0, 6.283); o.fill(); blades(lw); });                                                                       /* the hub and the three blades */
+    o.fillRect(cx - ox * 1.2, base, ox * 2.4, h * .04); },
+  pyramids(o, x, y, w, h) { // Egypt: the three pyramids of Giza, the largest at the back, with the courses of stone
+    const { H, poly, seg, cut } = kit(o, x, y, w, h), base = .86;
+    const pyr = (ax, ay, hl, hr, back) => {
+      if (!back) cut(() => { o.lineWidth = Math.max(8, h * .035); o.lineJoin = 'round'; poly([[hl, base], [ax, ay], [hr, base]]); o.stroke(); });        /* a gap around a pyramid in front */
+      poly([[hl, base], [ax, ay], [hr, base]]); o.fill();
+      cut(() => { o.lineWidth = Math.max(2, h * .008); o.beginPath(); for (let b = ay + .1; b < base - .03; b += .09) { const k = (b - ay) / (base - ay); seg(ax - (ax - hl) * k + .012, b, ax + (hr - ax) * k - .012, b); } o.stroke(); }); };   /* the courses */
+    pyr(-.1, .1, -.64, .44, true); pyr(.5, .34, .2, .84, false); pyr(-.66, .52, -.86, -.38, false);
+    o.beginPath(); const sun = H(.7, .16); o.arc(sun[0], sun[1], h * .05, 0, 6.283); o.fill();                                                        /* the sun */
+    o.fillRect(H(-.88, 0)[0], y + h * (base + .02), 1.76 * h, h * .022); },
+  castillo(o, x, y, w, h) { // Mexico: El Castillo, nine terraces, one central stair and the temple on top
+    const { H, poly, rect, seg, cut } = kit(o, x, y, w, h), base = .86, bw = .76, dx = .0625, st = .067, L = [[-bw, base]];
+    for (let k = 0; k < 9; k++) { const hw = bw - k * dx, t = base - (k + 1) * st; L.push([-hw, t], [-(hw - dx), t]); }
+    poly(L.concat(L.map(q => [-q[0], q[1]]).reverse())); o.fill();
+    const top = base - 9 * st; rect(-.17, top - .13, .17, top + .01); o.fill(); rect(-.2, top - .16, .2, top - .125); o.fill();                         /* the temple and its roof */
+    cut(() => { o.lineWidth = Math.max(2, h * .009); o.beginPath(); seg(-.08, base, -.08, top + .02); seg(.08, base, .08, top + .02); for (let b = top + .06; b < base - .01; b += .036) seg(-.062, b, .062, b); o.stroke();
+      rect(-.045, top - .115, .045, top + .01); o.fill(); });
+    o.fillRect(H(-.84, 0)[0], y + h * (base + .02), 1.68 * h, h * .022); },
+  mosque(o, x, y, w, h) { // Pakistan: the Badshahi Mosque, refined: pointed arches, onion domes, a framed portal and four minarets with open pavilions
+    const { H, poly, rect, seg, arch, dome, finial, cut } = kit(o, x, y, w, h), base = .86;
+    rect(-.72, .625, .72, base); o.fill(); rect(-.17, .48, .17, base); o.fill();                                                                     /* the prayer hall and the portal */
+    dome(0, .145, .48, .2); dome(-.37, .115, .625, .2); dome(.37, .115, .625, .2); finial(0, .28, .09);   /* the three domes */
+    [[-.67, .04, .5, .052], [.67, .04, .5, .052], [-.555, .03, .55, .042], [.555, .03, .55, .042]].forEach(q => {                                      /* the minarets */
+      const a = q[0], hw = q[1], t = q[2], r = q[3]; rect(a - hw, t, a + hw, base); o.fill(); rect(a - hw - .014, t - .012, a + hw + .014, t + .014); o.fill();
+      rect(a - hw * .85, t - .065, a + hw * .85, t - .01); o.fill(); dome(a, r, t - .065, r * 1.2); finial(a, t - .065 - r * 1.2, .035);
+      cut(() => { rect(a - hw * .38, t - .055, a + hw * .38, t - .02); o.fill(); o.lineWidth = Math.max(1.6, h * .006); o.beginPath(); [.62, .74].forEach(k => seg(a - hw, t + (base - t) * k, a + hw, t + (base - t) * k)); o.stroke(); }); });   /* an open pavilion and two bands on each shaft */
+    cut(() => { for (let a = -.62; a < .63; a += .052) if (Math.abs(a) > .22 && Math.abs(a) < .6) { rect(a - .012, .632, a + .012, .655); o.fill(); }                  /* the battlements */
+      [-.52, -.43, -.34, -.25, .25, .34, .43, .52].forEach(a => { arch(a, .03, .76, .705, base - .005); o.fill(); });                                      /* the pointed bays */
+      o.lineWidth = Math.max(1.8, h * .0065); o.beginPath(); seg(-.135, .56, -.135, .84); seg(.135, .56, .135, .84); seg(-.135, .56, .135, .56); o.stroke();   /* the frame of the portal */
+      arch(0, .085, .7, .6, base - .005); o.fill(); });                                                                                              /* the great iwan */
+    arch(0, .045, .79, .735, base - .005); o.fill(); cut(() => { arch(0, .03, .805, .76, base - .005); o.fill(); });                                  /* the doorway deep inside it */
+    o.fillRect(H(-.76, 0)[0], y + h * (base + .01), 1.52 * h, h * .022); },
+  bridge(o, x, y, w, h) { // Venice: the Rialto Bridge, a single stone arch under two arcades of shops and a raised central pavilion
+    const cx = x + w / 2, deck = d => y + h * (.46 + .15 * d * d * 4), roof = d => y + h * (.18 + (Math.abs(d) - .1) / .36 * .13);              /* d = distance from the middle, in widths */
+    o.beginPath(); o.moveTo(x, y + h * .8); o.lineTo(x, deck(.5)); for (let i = 1; i <= 24; i++) o.lineTo(x + w * i / 24, deck(i / 24 - .5)); o.lineTo(x + w, y + h * .8); o.closePath(); o.fill();   /* the bridge body */
+    [-1, 1].forEach(s => { o.beginPath(); o.moveTo(cx + s * w * .46, deck(.46) + 2); o.lineTo(cx + s * w * .46, roof(.46)); o.lineTo(cx + s * w * .1, y + h * .18); o.lineTo(cx + s * w * .1, deck(.1) + 2); o.closePath(); o.fill(); });  /* the arcades */
+    o.fillRect(cx - w * .1, y + h * .1, w * .2, h * .4); o.beginPath(); o.moveTo(cx - w * .12, y + h * .1); o.lineTo(cx, y); o.lineTo(cx + w * .12, y + h * .1); o.closePath(); o.fill();   /* the pavilion and its pediment */
+    o.globalCompositeOperation = 'destination-out';
+    o.beginPath(); o.ellipse(cx, y + h * .9, w * .32, h * .37, 0, 0, 6.283); o.fill();                                                          /* the arch */
+    o.beginPath(); o.arc(cx, y + h * .24, h * .075, Math.PI, 0); o.rect(cx - h * .075, y + h * .24, h * .15, h * .12); o.fill();               /* the pavilion's opening */
+    for (let i = 0; i < 5; i++) [-1, 1].forEach(s => { const d = .14 + i * .075, wx = cx + s * w * d, r = h * .038, top = roof(d) + h * .05, bot = deck(d) - h * .035;
+      if (bot - top > r * 1.5) { o.beginPath(); o.arc(wx, top + r, r, Math.PI, 0); o.rect(wx - r, top + r, r * 2, bot - top - r); o.fill(); } });  /* the arched shop fronts */
+    o.lineWidth = Math.max(1.5, h * .01); o.beginPath(); for (let i = 0; i <= 24; i++) { const px = x + w * i / 24, py = deck(i / 24 - .5) - h * .012; i ? o.lineTo(px, py) : o.moveTo(px, py); } o.stroke();   /* a thin line under the balustrade */
     o.globalCompositeOperation = 'source-over'; o.lineWidth = Math.max(2, h * .022); o.lineCap = 'round';
-    [.88, .97].forEach((k, r) => { o.beginPath(); for (let i = 0; i <= 60; i++) { const px2 = x + w * i / 60, py2 = y + h * k + Math.sin(i * .7 + r * 2) * h * .014; i ? o.lineTo(px2, py2) : o.moveTo(px2, py2); } o.stroke(); }); },
-  bauhaus(o, x, y, w, h) { // Dessau: the sign block and the glass workshop wing
-    o.fillRect(x, y, w * .17, h * .94); o.fillRect(x + w * .17, y + h * .3, w * .83, h * .64); o.fillRect(x - w * .02, y + h * .94, w * 1.04, h * .06);
-    o.globalCompositeOperation = 'destination-out'; o.lineWidth = Math.max(2, h * .014);
-    for (let i = 1; i < 21; i++) { const gx = x + w * (.19 + i * .0385); o.beginPath(); o.moveTo(gx, y + h * .36); o.lineTo(gx, y + h * .88); o.stroke(); }
-    [.36, .49, .62, .75, .88].forEach(k => { o.beginPath(); o.moveTo(x + w * .19, y + h * k); o.lineTo(x + w * .98, y + h * k); o.stroke(); });
-    o.save(); o.translate(x + w * .085, y + h * .47); o.rotate(Math.PI / 2); o.font = '800 100px Archivo, sans-serif'; const m = o.measureText('BAUHAUS').width, fs = 100 * h * .8 / m;
-    o.font = `800 ${fs}px Archivo, sans-serif`; o.textAlign = 'center'; o.textBaseline = 'middle'; o.direction = 'ltr'; o.fillText('BAUHAUS', 0, 0); o.restore(); o.globalCompositeOperation = 'source-over'; },
+    [.9, .98].forEach((k, r) => { o.beginPath(); for (let i = 0; i <= 60; i++) { const px2 = x + w * i / 60, py2 = y + h * k + Math.sin(i * .7 + r * 2) * h * .014; i ? o.lineTo(px2, py2) : o.moveTo(px2, py2); } o.stroke(); }); },
+  bauhaus(o, x, y, w, h) { // Dessau: the glass workshop wing, the tower with the stacked sign, the block behind
+    const { H, poly, rect, seg, cut } = kit(o, x, y, w, h), sh = .06, base = .88;                                                                  /* everything is shifted a little to the right to centre it */
+    const A = a => a + sh;
+    poly([[A(-.8), .4], [A(-.14), .12], [A(-.14), base], [A(-.8), .78]]); o.fill();                                                                  /* the glass wing */
+    rect(A(-.14), .06, A(.36), base); o.fill();                                                                                                      /* the tower */
+    rect(A(.4), .2, A(.66), base); o.fill();                                                                                                         /* the white block */
+    o.fillRect(H(A(-.84), 0)[0], y + h * (base + .02), 1.56 * h, h * .022);                                                                           /* the ground */
+    cut(() => { const Q = (s, t) => { const TL = [A(-.75), .45], TR = [A(-.18), .185], BR = [A(-.18), .73], BL = [A(-.75), .7]; return [(TL[0] * (1 - s) + TR[0] * s) * (1 - t) + (BL[0] * (1 - s) + BR[0] * s) * t, (TL[1] * (1 - s) + TR[1] * s) * (1 - t) + (BL[1] * (1 - s) + BR[1] * s) * t]; };
+      for (let i = 0; i < 9; i++) for (let j = 0; j < 3; j++) { const s0 = Math.pow(i / 9, 1.2), s1 = Math.pow((i + 1) / 9, 1.2), ds = (s1 - s0) * .12, t0 = j / 3 + .04, t1 = (j + 1) / 3 - .04; poly([Q(s0 + ds, t0), Q(s1 - ds, t0), Q(s1 - ds, t1), Q(s0 + ds, t1)]); o.fill(); }   /* the panes of the curtain wall */
+      [[.14, .2, .32, .3], [.14, .4, .32, .5], [.14, .6, .32, .7]].forEach(q => { rect(A(q[0]), q[1], A(q[2]), q[3]); o.fill(); });                  /* the windows of the tower */
+      [.3, .47, .64].forEach(b => { rect(A(.46), b, A(.6), b + .06); o.fill(); });                                                                  /* and of the block behind */
+      o.lineWidth = Math.max(2, h * .008); o.beginPath(); seg(A(-.14), .1, A(-.14), base); seg(A(.38), .12, A(.38), base); o.stroke();                /* the joints between the volumes */
+      rect(A(-.22), .685, A(.16), .745); o.fill(); rect(A(-.05), .745, A(-.01), base); o.fill();
+      o.font = `800 ${h * .07}px Archivo, sans-serif`; o.textAlign = 'center'; o.textBaseline = 'middle'; o.direction = 'ltr'; 'BAUHAUS'.split('').forEach((ch, i) => { const p = H(A(-.015 + .0), .16 + i * .08); o.fillText(ch, p[0], p[1]); }); });   /* the sign, cut out of the wall */
+    rect(A(-.2), .7, A(.14), .73); o.fill(); },
   dome(o, x, y, w, h) { // Plymouth: the 360 dome
     const cx = x + w / 2, by = y + h * .9, r = Math.min(w * .5, h * .88);
     o.beginPath(); o.arc(cx, by, r, Math.PI, 0); o.closePath(); o.fill(); o.fillRect(cx - r * 1.08, by, r * 2.16, h * .06);
@@ -194,7 +253,14 @@ function getTargets(i) {
   if (!st) { const n = mob ? 1500 : 3200; for (let k = 0; k < n; k++) tg.push([Math.random() * W, hh * (.06 + Math.random() * .86)]); tg.sort((p, q) => p[0] - q[0]); return { tg, dot: 2, maxY: hh * .6 }; }
   const key = [i, lang, W, hh].join('|'); if (tgCache.has(key)) return tgCache.get(key);
   const o = document.createElement('canvas').getContext('2d', { willReadFrequently: true }); o.canvas.width = W; o.canvas.height = hh; let g = 3.2;
-  if (st.shape) { const bw = Math.min(W * (mob ? .82 : .46), hh * .42 * 1.8), bh = bw / 1.8; SHAPES[st.shape](o, (W - bw) / 2, mid - bh / 2, bw, bh); if (mob) g = 2.8; }
+  if (st.shape) { const bw = Math.min(W * (mob ? .82 : .46), hh * .42 * 1.8), bh = bw / 1.8;
+    /* every landmark is drawn on its own, measured, and then scaled so that all of them take about the same room on the screen */
+    const t = document.createElement('canvas').getContext('2d', { willReadFrequently: true }); t.canvas.width = W; t.canvas.height = hh; t.fillStyle = t.strokeStyle = o.fillStyle; SHAPES[st.shape](t, (W - bw) / 2, mid - bh / 2, bw, bh);
+    const td = t.getImageData(0, 0, W, hh).data; let x0 = W, x1 = 0, y0b = hh, y1b = 0;
+    for (let yy = 0; yy < hh; yy += 2) for (let xx = 0; xx < W; xx += 2) if (td[(yy * W + xx) * 4 + 3] > 40) { if (xx < x0) x0 = xx; if (xx > x1) x1 = xx; if (yy < y0b) y0b = yy; if (yy > y1b) y1b = yy; }
+    if (x1 > x0 && y1b > y0b) { const sw = x1 - x0 + 2, sh = y1b - y0b + 2, sc = Math.min(Math.sqrt(bw * bh) * .88 / Math.sqrt(sw * sh), bw * 1.12 / sw, bh * 1.2 / sh);
+      o.drawImage(t.canvas, x0, y0b, sw, sh, W / 2 - sw * sc / 2, mid - sh * sc / 2, sw * sc, sh * sc); }
+    if (mob) g = 2.8; }
   else { const font = s => `${isAr ? 700 : 800} ${s}px ${isAr ? '"Readex Pro"' : 'Archivo'}, sans-serif`;
     const L = fitLines(o, T('heroSeq')[st.txt], isAr, W * (mob ? .86 : .8), hh * (mob ? .46 : .42), font), fs = Math.min(L.fs, hh * .27);
     o.font = font(fs); o.textAlign = 'center'; o.textBaseline = 'middle'; o.direction = isAr ? 'rtl' : 'ltr';
