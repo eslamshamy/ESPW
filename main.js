@@ -49,7 +49,7 @@ function render() {
 
   $('#xp').innerHTML = T('xp').map((x, i) => `<div class="xrow rv" data-chip="${x[3]}" style="transition-delay:${i * 50}ms"><span class="mono yr">${x[0]}</span><b>${x[1]}</b><span class="org" dir="ltr">${x[2]}</span><span class="ar">↗</span></div>`).join('');
   $$('.xrow').forEach(r => r.addEventListener('pointerenter', e => { const b = r.getBoundingClientRect(); r.style.setProperty('--o', e.clientY < b.top + b.height / 2 ? 'top' : 'bottom'); }));
-  $('#rs').innerHTML = RESEARCH.map((r, i) => `<div class="rrow rv" style="transition-delay:${i * 50}ms"><button type="button" aria-expanded="false"><span class="mono">${pad(i + 1)}</span><span class="t" dir="ltr">${r[1]}</span><span class="mono kind">${T('kinds')[r[3]]}</span><i class="pm"></i></button>
+  $('#rs').innerHTML = RESEARCH.map((r, i) => `<div class="rrow rv" style="transition-delay:${i * 50}ms"><button type="button" aria-expanded="false"><span class="t" dir="ltr">${r[1]}</span><span class="mono kind">${T('kinds')[r[3]]}</span><i class="pm"></i></button>
     <div class="more"><div><p><span dir="ltr">${r[0]} · ${r[2]}</span>${r[4] ? `<br><a class="mono" href="${r[4]}" target="_blank" rel="noopener">${T('open')}</a>` : ''}</p></div></div></div>`).join('');
   $$('.rrow > button').forEach(b => b.addEventListener('click', () => { const row = b.parentElement, open = !row.classList.contains('open');
     $$('.rrow.open').forEach(r => { r.classList.remove('open'); r.firstElementChild.setAttribute('aria-expanded', false); });
@@ -135,9 +135,9 @@ addEventListener('keydown', e => {
   const i = Math.max(-1, activeCard) + d; if (i < 0) scrollTo({ top: workTop, behavior: 'smooth' }); else if (i < N) scrollTo({ top: cardY(i), behavior: 'smooth' });
 });
 let dragging = false, wasDrag = false, dragX = 0, dragMoved = 0;
-pin.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse' || e.button) return; dragging = true; wasDrag = false; dragX = e.clientX; dragMoved = 0; pin.classList.add('drag'); });
+pin.addEventListener('pointerdown', e => { if (e.button) return; dragging = true; wasDrag = false; dragX = e.clientX; dragMoved = 0; pin.classList.add('drag'); });
 addEventListener('pointermove', e => { if (!dragging) return; const dx = e.clientX - dragX; dragX = e.clientX; dragMoved += Math.abs(dx); if (dragMoved > 6) wasDrag = true; scrollBy(0, dx * (rtl() ? 1.6 : -1.6)); });
-addEventListener('pointerup', () => { dragging = false; pin.classList.remove('drag'); setTimeout(() => wasDrag = false, 50); });
+const endDrag = () => { dragging = false; pin.classList.remove('drag'); setTimeout(() => wasDrag = false, 50); }; addEventListener('pointerup', endDrag); addEventListener('pointercancel', endDrag);
 
 /* ---------- front page: dots drift in, spell three lines, then draw the journey ---------- */
 const pts = $('#pts'), pc = pts.getContext('2d'), heroC = $('.hero-c'), tagEl = $('.tagline');
@@ -262,6 +262,7 @@ function frame(now) {
   const sp = clamp(y / (document.documentElement.scrollHeight - H)); railF.style.transform = `scaleY(${sp})`; pct.textContent = pad(Math.round(sp * 100), 3);
 
   let si = 0; secs.forEach((s, i) => { if (s.getBoundingClientRect().top < H * .5) si = i; });
+  document.body.classList.toggle('pg-off', !(y < H * .6 || si === secs.length - 1));
   if (si !== secI) { secI = si; scramble(secName, si ? T(secs[si].dataset.sec) : ''); }
 
   if (y < H * 1.15) drawPts(t, y);

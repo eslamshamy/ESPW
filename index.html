@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=JetBrains+Mono:wght@400;500&family=Readex+Pro:wght@300..700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=31">
+<link rel="stylesheet" href="style.css?v=43">
 </head>
 <body class="loading">
 
@@ -31,7 +31,7 @@
 <div id="rail" aria-hidden="true"><i><b id="railF"></b></i><span id="pct" class="mono">000</span></div>
 
 <header id="nav">
-  <a href="#hero" class="mark" dir="ltr">E<span>/</span>E</a>
+  <a href="#hero" class="mark" dir="ltr">E<span>/</span>S<small class="beta">beta</small></a>
   <span class="mono nav-mid" id="secName"></span>
   <div class="nav-r">
     <span class="mono clock hide-m"><span dir="ltr">DE</span> <span class="clk" dir="ltr">00:00:00</span></span>
@@ -44,11 +44,11 @@
 <div id="menu" aria-hidden="true">
   <div class="cols"><i></i><i></i><i></i><i></i><i></i></div>
   <nav class="menu-in">
-    <a href="projects.html" data-go><small class="mono">01</small><span data-i18n="nWork">Work</span></a>
-    <a href="#experience"><small class="mono">02</small><span data-i18n="nXp">Experience</span></a>
-    <a href="#research"><small class="mono">03</small><span data-i18n="nRes">Research</span></a>
-    <a href="#about"><small class="mono">04</small><span data-i18n="nAbout">About</span></a>
-    <a href="#contact"><small class="mono">05</small><span data-i18n="nContact">Contact</span></a>
+    <a href="projects.html" data-go><span data-i18n="nWork">Work</span></a>
+    <a href="#experience"><span data-i18n="nXp">Experience</span></a>
+    <a href="#research"><span data-i18n="nRes">Research</span></a>
+    <a href="#about"><span data-i18n="nAbout">About</span></a>
+    <a href="#contact"><span data-i18n="nContact">Contact</span></a>
   </nav>
   <div class="menu-foot mono"><a href="https://linkedin.com/in/eslamshamy" target="_blank" rel="noopener" data-i18n="linkedin">LinkedIn ↗</a><a href="https://www.eslamshamy.com" target="_blank" rel="noopener" data-i18n="website">Website ↗</a><a href="mailto:info@eslamshamy.com" dir="ltr">info@eslamshamy.com</a></div>
 </div>
@@ -68,7 +68,7 @@
     <canvas id="pts" aria-hidden="true"></canvas>
     <h1 class="sr" data-i18n="name">Eslam ElShamy</h1>
     <div class="hero-c"><p class="tagline mono"></p></div>
-    <div class="hero-b mono"><span data-i18n="based">Based in Germany</span><span class="scroll" data-i18n="scroll">Scroll ↓</span><span class="hide-m" data-i18n="roles">Architect · Designer · Researcher</span></div>
+    <div class="hero-b mono"><span data-i18n="roles">Architect · Designer · Researcher</span><span class="scroll" data-i18n="scroll">Scroll ↓</span><span class="hide-m" data-i18n="based">Based in Germany</span></div>
   </section>
 
   <div class="marquee" id="mq" aria-hidden="true"><div class="mq-in" id="mqIn"></div></div>
@@ -92,21 +92,21 @@
   </section>
 
   <section id="experience" class="pad" data-sec="nXp">
-    <header class="sh rv"><span class="mono">(03)</span><h2 data-i18n="xpH">Experience</h2><i></i></header>
+    <header class="sh rv"><h2 data-i18n="xpH">Experience</h2><i></i></header>
     <div id="xp"></div>
   </section>
 
   <section id="research" class="pad" data-sec="nRes">
-    <header class="sh rv"><span class="mono">(04)</span><h2 data-i18n-html="resH">Research <em>&amp;</em> talks</h2><i></i></header>
+    <header class="sh rv"><h2 data-i18n-html="resH">Research <em>&amp;</em> talks</h2><i></i></header>
     <div id="rs"></div>
   </section>
 
   <section id="about" class="pad" data-sec="nAbout">
-    <header class="sh rv"><span class="mono">(05)</span><h2 data-i18n="aboutH">About</h2><i></i></header>
+    <header class="sh rv"><h2 data-i18n="aboutH">About</h2><i></i></header>
     <div class="about">
       <div class="arch-wrap rv">
         <svg class="badge" viewBox="0 0 200 200" aria-hidden="true" dir="ltr"><defs><path id="circ" d="M100 100m-78 0a78 78 0 1 1 156 0a78 78 0 1 1-156 0"/></defs><text><textPath href="#circ">Architect · Designer · Researcher · Architect · Designer · Researcher · </textPath></text></svg>
-        <div class="arch"><img src="assets/portrait.jpg" alt="Portrait of Eslam ElShamy" onerror="this.remove()"><div class="arch-ph"><b>EE</b><span class="mono" dir="ltr">assets/portrait.jpg</span></div></div>
+        <div class="arch"><img src="assets/portrait.jpg" alt="Portrait of Eslam ElShamy" onerror="this.remove()"><div class="arch-ph"><b>ES</b><span class="mono" dir="ltr">assets/portrait.jpg</span></div></div>
       </div>
       <div>
         <p class="state" id="state"></p>
@@ -121,7 +121,7 @@
   </section>
 
   <section id="contact" data-sec="nContact">
-    <p class="mono" data-i18n="contactK">(06) Contact</p>
+    <p class="mono" data-i18n="contactK">Contact</p>
     <h2 class="c-head" data-i18n="hello">Say hello</h2>
     <div class="c-grid">
       <form id="form" novalidate>
@@ -147,11 +147,11 @@
   </section>
 </main>
 
-<script src="scenes.js?v=31"></script>
-<script src="scenes2.js?v=31"></script>
-<script src="i18n.js?v=31"></script>
-<script src="projects-data.js?v=31"></script>
-<script src="playground.js?v=31"></script>
-<script src="main.js?v=31"></script>
+<script src="scenes.js?v=43"></script>
+<script src="scenes2.js?v=43"></script>
+<script src="i18n.js?v=43"></script>
+<script src="projects-data.js?v=43"></script>
+<script src="playground.js?v=43"></script>
+<script src="main.js?v=43"></script>
 </body>
 </html>

@@ -13,7 +13,7 @@ function render() {
   const ar = rtl() ? '↖' : '↗';
   grid.innerHTML = ALL_PROJECTS.map((p, i) => { const x = p[L], link = p.caseId ? `href="case.html?id=${p.caseId}" class="pc-frame leave" data-cursor="curOpen"` : p.href ? `href="${p.href}" target="_blank" rel="noopener" class="pc-frame" data-cursor="curOpen"` : 'class="pc-frame"';
     return `<article class="pc${matches(p) ? '' : ' gone'}" data-i="${i}" style="--d:${(i % 6) * 60}ms">
-      <${p.caseId || p.href ? 'a' : 'div'} ${link}>${p.scene ? '<canvas></canvas>' : `<img src="${p.img}" alt="" loading="lazy">`}<span class="pc-n" dir="ltr">${pad(i + 1)}</span>${p.caseId ? `<span class="pc-go pc-case mono">${T('caseStudy')}</span>` : p.href ? `<span class="pc-go">${ar}</span>` : ''}</${p.caseId || p.href ? 'a' : 'div'}>
+      <${p.caseId || p.href ? 'a' : 'div'} ${link}>${p.scene ? '<canvas></canvas>' : `<img src="${p.img}" alt="" loading="lazy">`}${p.caseId ? `<span class="pc-go pc-case mono">${T('caseStudy')}</span>` : p.href ? `<span class="pc-go">${ar}</span>` : ''}</${p.caseId || p.href ? 'a' : 'div'}>
       <div class="pc-meta mono"><span>${x.kind}</span></div>
       <h3>${x.title}</h3><p>${x.desc}</p>
       <div class="pc-tags mono">${p.cats.map(c => `<button type="button" data-k="${c}">${CATS[c][L]}</button>`).join('')}</div></article>`; }).join('');
